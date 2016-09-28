@@ -49,14 +49,14 @@ It installs two:
 1. Browser.sublime-build: For viewing markdown in a browser
 ```JSON
 {
-  [ "cmd": ["/usr/local/bin/md4sublime", " ", "$file"]
+   "cmd": ["/usr/local/bin/md4sublime", " ", "$file"]
 }
 ```
 
 2. md2pdf.sublime-build: For converting your markdown file into PDF format 
 ```JSON
 {
-  [ "cmd": ["/usr/local/bin/md4sublime", "--pdf", "$file"]
+   "cmd": ["/usr/local/bin/md4sublime", "--pdf", "$file"]
 }
 ```
 
