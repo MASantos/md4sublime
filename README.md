@@ -1,7 +1,7 @@
 # md4sublime
 Wrapper around pandoc for working with markdown files in sublime.
 
-Creates sublime builds for browser rendering and pdf generation from markdown files.
+Creates sublime builds for browser rendering and pdf convertion of markdown files.
 ---
 ## Requirements
 This script requires [`pandoc`](https://en.wikipedia.org/wiki/Pandoc), a document converter written in [Haskell](https://en.wikipedia.org/wiki/Haskell_(programming_language)). Hence, you'll need to install first Haskell, then Pandoc, before making use of this script. 
@@ -34,25 +34,26 @@ Usage and output depends on what we want to achieve.
 Options:
 
 ```bash
-                -h|-help|--help)               No help so far. Seee source code.
-                --pdf)                         Convert to PDF                               Generate PDF file from markdown
-                -F|--fire*|--Fire*)            Open markdown file in BROWSER = FIREFOX;;    Will show markdown file in Firefox
-                -C|--chro*|--Chro*)            Open markdown file in BROWSER = CHROME       Idem, but in Chrome (not yet fully tested)
-                --debug)                       DEBUGMODE=true ; KEEPHTML=true ; set -x ;;   Print detail log in sublime console.
-                --keep|--keephtml|--keep-html) KEEPHTML=true ;;                             Keep generated html file when rendering in browser.               
-                --install) shift; install_this ; exit;;                                     Create sublime builds & install system wide.
-
+-h|-help|--help)               No help so far. Seee source code.
+--pdf)                         Convert to PDF                               Generate PDF file from markdown
+-F|--fire*|--Fire*)            Open markdown file in BROWSER = FIREFOX;;    Will show markdown file in Firefox
+-C|--chro*|--Chro*)            Open markdown file in BROWSER = CHROME       Idem, but in Chrome (not yet fully tested)
+--debug)                       DEBUGMODE=true ; KEEPHTML=true ; set -x ;;   Print detail log in sublime console.
+--keep|--keephtml|--keep-html) KEEPHTML=true ;;                             Keep generated html file when rendering in browser.               
+--install) shift; install_this ; exit;;                                     Create sublime builds & install system wide.
 ```
 
 ## md4sublime build scripts
 It installs two:
-1.- Browser.sublime-build: For viewing markdown in a browser
+
+1. Browser.sublime-build: For viewing markdown in a browser
 ```JSON
 {
-  [ "cmd": ["/usr/local/bin/md4sublime", "", "$file"]
+  [ "cmd": ["/usr/local/bin/md4sublime", " ", "$file"]
 }
 ```
-2.- md2pdf.sublime-build: For converting your markdown file into PDF format 
+
+2. md2pdf.sublime-build: For converting your markdown file into PDF format 
 ```JSON
 {
   [ "cmd": ["/usr/local/bin/md4sublime", "--pdf", "$file"]
