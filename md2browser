@@ -1,0 +1,148 @@
+#!/bin/bash
+# View a markdown file in Firefox
+# Requires: pandoc
+#
+# INPUT: markdown file.md
+# OUTPUT: browser window with file.md rendered as html
+# 	It creates a temporary html version under .file.md
+#	within the PWD
+# AUTHOR: Miguel A. santos
+# Licensd as Public Domain 2016
+#
+#
+set -x
+#SETTINGS
+# In Mac, Haskell Cabal installs pandoc in a *NIX-like way. Seems we can use which
+# to find it the same way as in Linux
+# PANDOC=/usr/bin/pandoc
+# There is a catch: sublime build seems to be executed with PATH defined by ~/.profile. 
+# However the above which works only wihtin my ~/.bashrc environment where my local Haskell stuff is defined.
+# DIRTY HACK (too lazy now)
+. ~/.bashrc
+PANDOC=`which pandoc`
+# In Mac, we can just call 'open' for both browsers and let systems settings determine which default browser is opened.
+OS=`uname`
+if test "$OS" == "Linux" ; then
+	#FIREFOX=/usr/bin/firefox
+	FIREFOX=`which firefox`
+	CHROME=`which chrome`
+elif test "$OS" == "Darwin"; then
+#	FFD=`find /Applications -maxdepth 2 -type d -iname "Firefox.app"`
+#	if test "x$FFD" == "x" ; then
+#		msg " Could not find Firefox within 2 levels of /Applications\n" 
+#		msg " Especify the path to the folder \'Firefox.app\'" 
+#		read FFD
+#		test -d "$FFD" || { msg "ERROR: doesn't seem a directory $FFD" && exit 1 ;}
+#	fi
+	#FIREFOX="open -a Firefox.app"
+	#CHROME="open -a Google\ Chrome.app"
+	FIREFOX="open -a Firefox.app "
+	CHROME="open"
+	
+fi
+BROWSER=$FIREFOX
+PDF=false
+# 
+#
+TMPF=""
+INF=""
+#TMPD=/tmp
+TMPD=$PWD
+DEBUGMODE=false
+KEEPHTML=false
+###
+parseArgs(){
+while [ $# -gt 0 ] ; do
+	case "$1" in
+		-h|-help|--help) shift ; echo "$0 : help: See source code" ; exit ;;
+		-F|--fire*|--Fire*) shift ; BROWSER=$FIREFOX;;
+		-C|--chro*|--Chro*) shift ; BROWSER=$CHROME;;
+		--debug) shift ; DEBUGMODE=true ; KEEPHTML=true ; set -x ;;
+		--keep|--keephtml|--keep-html) shift ; KEEPHTML=true ;;
+		--install) shift; install_this ; exit ;;
+		--pdf) shift; PDF=true ; BROWSER="" ;;
+		*) if test  -e "$1" ; then
+			INF="$1" 
+			TMPD=`dirname $1`
+		   fi 
+		   shift
+		  ;; 
+	esac
+done
+}
+
+convert2htmlpdf(){
+#SUFF=`echo "$1" | sed 's@.*\.html@.html@g'`
+SUFF=`echo "$1" | sed 's@.*\.md@md@g'`
+if  ! $PDF && test "$SUFF" == "md" ; then
+	TMPF="$( echo $( basename $1 )| sed 's@\.md@.html@g')"
+	viewInBrowser "$1"
+elif $PDF ; then
+	TMPF="$( echo $( basename $1 )| sed 's@\.md@.pdf@g')"
+	md2pdf "$1"
+fi
+}
+
+md2pdf() {
+TMPF="$TMPF"
+$PANDOC -f markdown -t latex -o $TMPD/"$TMPF" "$1"
+}
+
+md2html() {
+TMPF=".$TMPF"
+$PANDOC -f markdown -t html -o $TMPD/"$TMPF" "$1"
+}
+
+viewInBrowser() {
+md2html "$1"
+#$BROWSER $TMPD/"$TMPF" #&& rm $TMPD/"$TMPF"
+$BROWSER "$1" && sleep 1 && { $KEEPHTML || $DEBUGMODE || rm "$1" ;}
+}
+
+main() {
+parseArgs "$@"
+convert2htmlpdf "$INF"
+#viewInBrowser  $TMPD/"$TMPF"
+}
+
+install_this() {
+msg "Called installation:\n\t1.- Create local build system for Sublime\n\t2.- Install system wide under /usr/local/bin\n"
+OS=`uname`
+#Create new build system in sublime => Open file in broser via ctrl+B
+SUBLIMEBUILDBROWSER=Packages/User/Browser.sublime-build
+SUBLIMEBUILDPDF=Packages/User/md2pdf.sublime-build
+THISEXEC=/usr/local/bin/`basename $0`
+##Linux
+if test "$OS" == "Linux" ; then
+	test -d /usr/local/bin || mkdir -p /usr/local/bin
+###Sublime Text 2 & 3
+	#if test -d ~/.config/sublime-text-2 ; then
+	for subver in `find ~/.config -type d -iname "sublime-text-*"` ; do
+		cat<<EOLS > $subver/$SUBLIMEBUILDBROWSER
+		{
+			"cmd": ["$THISEXEC", "","\$file"]
+		}
+EOLS
+	done
+elif test "$OS" == "Darwin" ; then
+	subver=~/Library/Application\ Support/Sublime\ Text\ 2  
+	bnsubver=`basename '~/Library/Application Support/Sublime Text 2'` 
+	msg "Creating new build system for $bnsubver --> $subver/$SUBLIMEBUILDBROWSER\n"
+	echo -e '{\n\t"cmd": ["'$THISEXEC'", "","$file"]\n}' > "$subver"/$SUBLIMEBUILDBROWSER
+	msg "Creating new build system for $bnsubver --> $subver/$SUBLIMEBUILDPDF\n"
+	echo -e '{\n\t"cmd": ["'$THISEXEC'", "--pdf","$file"]\n}' > "$subver"/$SUBLIMEBUILDPDF
+fi
+[ $? -ne 0 ] && msg "ERROR : Something went wrong when trying to create a build system for Sublime\n" && exit 1
+msg "Installing system wide under /usr/bin/local\nEnter root " #su will add the string 'Password:'
+su root -c 'test -d /usr/local/bin || mkdir -p /usr/local/bin ; cp '$0' '$THISEXEC' ; chmod go+rx '$THISEXEC
+ls -lFhc $THISEXEC 
+[ $? -ne 0 ] && msg "ERROR : Something went wrong with the installation.\n\n" && exit 1
+msg "Successfully installed `basename $0`\n"
+}
+
+msg(){
+echo -en "`basename $0`: $@"
+}
+
+main "$@"
+
