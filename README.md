@@ -17,7 +17,7 @@ Only tested for the following environment:
 Actually, I have tested it as well for Firefox and Sublime Text 2 & 3 in Debian 8 Jessie (latest as of Sept. 2016). However only through manual installation and only so for previous versions (as of Wed Sep 28).
 
 ## Sublime user defined builds
-In order to build a project in sublime one can go to `Tools -> Build System` and choose the one appropiate to our project (say `Make` or `C++` or `Python`) and then triggered it on the file we are currently editing by clicking on `Tools -> Build` ( `command+B/ctrl+B` in Mac/:Linux.
+In order to build a project in sublime one can go to `Tools -> Build System` and choose the one appropiate to our project (say `Make` or `C++` or `Python`) and then trigger it on the file we are currently editing by clicking on `Tools -> Build` ( `command+B/ctrl+B` in Mac/:Linux) .
 
 Under `Packages/User` `Sublime Text` lets you define different build methods. These are given in JSON format.
 The format is
@@ -44,16 +44,16 @@ Options:
 ```
 
 ## md4sublime build scripts
-It installs two:
+It installs two sublime build-scripts:
 
-1. Browser.sublime-build: For viewing markdown in a browser
+1. `Browser.sublime-build`: For viewing markdown in a browser
 ```JSON
 {
    "cmd": ["/usr/local/bin/md4sublime", " ", "$file"]
 }
 ```
 
-2. md2pdf.sublime-build: For converting your markdown file into PDF format 
+2. `md2pdf.sublime-build`: For converting your markdown file into PDF format 
 ```JSON
 {
    "cmd": ["/usr/local/bin/md4sublime", "--pdf", "$file"]
