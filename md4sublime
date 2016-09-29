@@ -1,5 +1,12 @@
 #!/bin/bash
-# View a markdown file in Firefox
+usage(){
+cat<<EOU
+# md4sublime  
+# Markdown for Sublime
+# ----------------------------
+# Provides build-scripts for converting a markdown file to
+# HTML or PDF, and also for opening it in the browser.
+#
 # Requires: pandoc
 #
 # INPUT: markdown file.md
@@ -9,6 +16,8 @@
 # AUTHOR: Miguel A. santos
 # Licensd as Public Domain 2016
 #
+EOU
+}
 #
 set -x
 #SETTINGS
@@ -54,7 +63,7 @@ KEEPHTML=false
 parseArgs(){
 while [ $# -gt 0 ] ; do
 	case "$1" in
-		-h|-help|--help) shift ; echo "$0 : help: See source code" ; exit ;;
+		-h|-help|--help) shift ; echo "$0 : help: See source code" ; usage ; exit ;;
 		-F|--fire*|--Fire*) shift ; BROWSER=$FIREFOX;;
 		-C|--chro*|--Chro*) shift ; BROWSER=$CHROME;;
 		--debug) shift ; DEBUGMODE=true ; KEEPHTML=true ; set -x ;;
