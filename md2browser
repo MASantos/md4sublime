@@ -113,16 +113,28 @@ SUBLIMEBUILDBROWSER=Packages/User/Browser.sublime-build
 SUBLIMEBUILDPDF=Packages/User/md2pdf.sublime-build
 THISEXEC=/usr/local/bin/`basename $0`
 ##Linux
+# Here Sublime Text Packages directory is located by default under
+# ~/.config and each version is sublime-text-{2,3}
+# Hence, no spaces to take care of and thus a more straightforward handling
+#
 if test "$OS" == "Linux" ; then
 	test -d /usr/local/bin || mkdir -p /usr/local/bin
 ###Sublime Text 2 & 3
 	#if test -d ~/.config/sublime-text-2 ; then
 	for subver in `find ~/.config -type d -iname "sublime-text-*"` ; do
-		cat<<EOLS > $subver/$SUBLIMEBUILDBROWSER
+		bnsubver=`basename $subver`
+		msg "Creating new build system for $bnsubver --> $subver/$SUBLIMEBUILDBROWSER\n"
+		cat<<EOLSA > $subver/$SUBLIMEBUILDBROWSER
 		{
 			"cmd": ["$THISEXEC", "","\$file"]
 		}
-EOLS
+EOLSA
+		msg "Creating new build system for $bnsubver --> $subver/$SUBLIMEBUILDPDF\n"
+		cat<<EOLSB > $subver/$SUBLIMEBUILDPDF
+		{
+			"cmd": ["$THISEXEC", "--pdf","\$file"]
+		}
+EOLSB
 	done
 elif test "$OS" == "Darwin" ; then
 	subver=~/Library/Application\ Support/Sublime\ Text\ 2  
