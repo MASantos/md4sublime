@@ -1,14 +1,20 @@
-# md4sublime
-Wrapper around pandoc for working with markdown files in sublime.
+# MD4SUBLIME 
+Markdown for Sublime Text.
+
+A wrapper around pandoc for working with markdown files in sublime.
 
 Creates sublime builds for browser rendering and pdf convertion of markdown files.
----
+
+- - -
+
 ## Requirements
-This script requires [`pandoc`](https://en.wikipedia.org/wiki/Pandoc), a document converter written in [Haskell](https://en.wikipedia.org/wiki/Haskell_(programming_language)). Hence, you'll need to install first Haskell, then Pandoc, before making use of this script. 
+This script requires [`pandoc`](https://en.wikipedia.org/wiki/Pandoc), a document converter written in [`Haskell`](https://en.wikipedia.org/wiki/Haskell_(programming_language)). Hence, you'll need to install first Haskell, then Pandoc, before making use of this script. 
 
-Note: Read the above link for Pandoc, if you don't know yet what it does. If you work with different document types it may be worth to have Pandoc -even if for that you need Haskell installed.
+Another big (in terms of download&HD footprint) dependency is [`pdflatex`](https://www.latex-project.org/get/). That is, you need a working [`LaTeX`](https://www.latex-project.org/get/) installation. This is necessary only for converting your markdown into a PDF file.
 
-## STATUS
+Note: Read the above link for Pandoc, if you don't know yet what it does. If you work with different document types it may be worth to have Pandoc -even if for that you need Haskell installed. If you're doing researc in any of the STEM sciences, you probably already have LaTeX installed. Also, Haskell is arguably the coolest and more promising purely-functional, strong-statically-typed programming languages around. 
+
+## Status
 Only tested for the following environment:
 * OSX 10.6.8 Snow Leopard (I know, I know,...walking alone in the desert :-p )
 * Firefox
@@ -29,6 +35,20 @@ The format is
 where _build-script_ is the script you want to use to _build_ your project and _args_ is the string of arguments you need to pass your build script in order to process the file. `$file` will be the file you apply the build script on. 
 
 ## md4sublime
+Markdown for Sublime
+----------------------------
+Provides build-scripts for converting a markdown file to
+HTML or PDF, and also for opening it in the browser.
+
+* Requires: pandoc
+* INPUT: markdown file.md
+* OUTPUT: browser window with file.md rendered as html
+	  It creates a temporary html version under .file.md
+	  within the PWD
+* AUTHOR: Miguel A. santos
+
+Licensed as Public Domain 2016
+
 Usage and output depends on what we want to achieve. 
 
 Options:
@@ -60,7 +80,7 @@ It installs two sublime build-scripts:
 }
 ```
 
-### Installation
+## Installation
 ```bash
 ./md4sublime --install
 ```
