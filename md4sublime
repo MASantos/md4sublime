@@ -105,7 +105,7 @@ $PANDOC -f markdown -t html -o $TMPD/"$TMPF" "$1"
 viewInBrowser() {
 md2html "$1"
 #$BROWSER $TMPD/"$TMPF" #&& rm $TMPD/"$TMPF"
-$BROWSER "$1" && sleep 1 && { $KEEPHTML || $DEBUGMODE || rm "$1" ;}
+$BROWSER  $TMPD/"$TMPF" && sleep 1 && { $KEEPHTML || $DEBUGMODE || rm  $TMPD/"$TMPF" ;}
 }
 
 main() {
