@@ -98,7 +98,10 @@ $PANDOC -f markdown -t latex -o $TMPD/"$TMPF" "$1"
 }
 
 md2html() {
-TMPF=".$TMPF"
+# if KEEPHTML=true we don't need to hide the html output
+if ! $KEEPHTML ; then 
+	TMPF=".$TMPF"
+fi
 $PANDOC -f markdown -t html -o $TMPD/"$TMPF" "$1"
 }
 
