@@ -148,20 +148,45 @@ EOLSA
 		}
 EOLSB
 	done
+##Mac OSX (10.6.8 Snow Leopard at least)
+# Here Sublime Text Packages directory is located by default under
+# ~/Library/Application\ Support/Sublime\ Text\ {2,3} depending on the version
+# Hence, we need to PAY ATTENTION TO SPACES !!
+#
 elif test "$OS" == "Darwin" ; then
 	subver=~/Library/Application\ Support/Sublime\ Text\ 2  
 	bnsubver=`basename '~/Library/Application Support/Sublime Text 2'` 
-	msg "Creating new build system for $bnsubver --> $subver/$SUBLIMEBUILDBROWSER\n"
-	echo -e '{\n\t"cmd": ["'$THISEXEC'", "","$file"]\n}' > "$subver"/$SUBLIMEBUILDBROWSER
-	msg "Creating new build system for $bnsubver --> $subver/$SUBLIMEBUILDPDF\n"
-	echo -e '{\n\t"cmd": ["'$THISEXEC'", "--pdf","$file"]\n}' > "$subver"/$SUBLIMEBUILDPDF
+	if [ ! -s "$subver"/$SUBLIMEBUILDBROWSER ] ; then 
+		msg "Creating new build system for $bnsubver --> $subver/$SUBLIMEBUILDBROWSER\n"
+		echo -e '{\n\t"cmd": ["'$THISEXEC'", "","$file"]\n}' > "$subver"/$SUBLIMEBUILDBROWSER
+	else
+		msg "Keeping already found build system $subver/$SUBLIMEBUILDBROWSER \n"
+	fi
+	if [ ! -s "$subver"/$SUBLIMEBUILDPDF ] ; then 
+		msg "Creating new build system for $bnsubver --> $subver/$SUBLIMEBUILDPDF\n"
+		echo -e '{\n\t"cmd": ["'$THISEXEC'", "--pdf","$file"]\n}' > "$subver"/$SUBLIMEBUILDPDF
+	else
+		msg "Keeping already found build system  $subver/$SUBLIMEBUILDPDF\n"
+	fi
 fi
 [ $? -ne 0 ] && msg "ERROR : Something went wrong when trying to create a build system for Sublime\n" && exit 1
-msg "Installing system wide under /usr/bin/local\nEnter root " #su will add the string 'Password:'
-su root -c 'test -d /usr/local/bin || mkdir -p /usr/local/bin ; cp '$0' '$THISEXEC' ; chmod go+rx '$THISEXEC
-ls -lFhc $THISEXEC 
-[ $? -ne 0 ] && msg "ERROR : Something went wrong with the installation.\n\n" && exit 1
-msg "Successfully installed `basename $0`\n"
+
+#Install (anew) unless already previous installation detected
+anew="YES"
+if [ -s $THISEXEC ] ; then
+	msg " Detected previous installation of $THISEXEC. Proceed installation anew? [y/N]"
+	read anew
+fi
+case $anew in
+	y*|Y*)
+		msg "Installing system wide under /usr/bin/local\nEnter root " #su will add the string 'Password:'
+		su root -c 'test -d /usr/local/bin || mkdir -p /usr/local/bin ; cp '$0' '$THISEXEC' ; chmod go+rx '$THISEXEC
+		ls -lFhc $THISEXEC 
+		[ $? -ne 0 ] && msg "ERROR : Something went wrong with the installation.\n\n" && exit 1
+		msg "Successfully installed `basename $0`\n"
+		;;
+	*) msg "SKIPPING installation of $THISEXEC!\n" ;;
+esac
 }
 
 msg(){
